@@ -1,0 +1,126 @@
+# API Contract for Todo CLI Extensions
+
+# Note: This is a conceptual contract since the application is a CLI tool
+# The contract represents the interface between the CLI commands and the underlying services
+
+openapi: 3.0.0
+info:
+  title: Todo CLI Extensions API
+  version: 1.0.0
+  description: API contract for the extended todo CLI application
+
+paths:
+  /tasks:
+    get:
+      summary: List tasks with optional filtering and sorting
+      parameters:
+        - name: status
+          in: query
+          description: Filter tasks by status (done/not done)
+          schema:
+            type: string
+            enum: [done, not_done]
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          schema:
+            type: string
+            enum: [createdAt, deadline, status]
+        - name: order
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    put:
+      summary: Update task status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [done, not_done]
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+components:
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - description
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the task
+        description:
+          type: string
+          description: Task description text
+        status:
+          type: string
+          enum: [done, not_done]
+          description: Task completion status
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when task was created
+        deadline:
+          type: string
+          format: date-time
+          description: Optional ISO 8601 timestamp for task deadline
+    TaskInput:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+          description: Task description text
+        deadline:
+          type: string
+          format: date-time
+          description: Optional ISO 8601 timestamp for task deadline

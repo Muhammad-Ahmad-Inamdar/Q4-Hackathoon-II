@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light Theme */
+:root[data-theme="light"] {
+  /* Background colors */
+  --bg-primary: 255, 255, 255; /* #ffffff */
+  --bg-secondary: 248, 250, 252; /* #f8fafc */
+  --bg-tertiary: 241, 245, 249; /* #f1f5f9 */
+
+  /* Text colors */
+  --text-primary: 30, 41, 59; /* #1e293b */
+  --text-secondary: 100, 116, 139; /* #64748b */
+  --text-muted: 148, 163, 184; /* #94a3b8 */
+
+  /* Border colors */
+  --border-primary: 226, 232, 240; /* #e2e8f0 */
+  --border-secondary: 203, 213, 225; /* #cbd5e1 */
+
+  /* Interactive colors */
+  --interactive-primary: 59, 130, 246; /* #3b82f6 */
+  --interactive-hover: 37, 99, 235; /* #2563eb */
+  --interactive-disabled: 203, 213, 225; /* #cbd5e1 */
+
+  /* Status colors */
+  --success: 16, 185, 129; /* #10b981 */
+  --warning: 245, 158, 11; /* #f59e0b */
+  --error: 239, 68, 68; /* #ef4444 */
+  --info: 14, 165, 233; /* #0ea5e9 */
+}
+
+/* Dark Theme */
+:root[data-theme="dark"] {
+  /* Background colors */
+  --bg-primary: 15, 23, 42; /* #0f172a */
+  --bg-secondary: 30, 41, 59; /* #1e293b */
+  --bg-tertiary: 51, 65, 85; /* #334155 */
+
+  /* Text colors */
+  --text-primary: 241, 245, 249; /* #f1f5f9 */
+  --text-secondary: 203, 213, 225; /* #cbd5e1 */
+  --text-muted: 148, 163, 184; /* #94a3b8 */
+
+  /* Border colors */
+  --border-primary: 51, 65, 85; /* #334155 */
+  --border-secondary: 71, 85, 105; /* #475569 */
+
+  /* Interactive colors */
+  --interactive-primary: 96, 165, 250; /* #60a5fa */
+  --interactive-hover: 59, 130, 246; /* #3b82f6 */
+  --interactive-disabled: 71, 85, 105; /* #475569 */
+
+  /* Status colors */
+  --success: 52, 211, 153; /* #34d399 */
+  --warning: 251, 191, 36; /* #fbbf24 */
+  --error: 248, 113, 113; /* #f87171 */
+  --info: 125, 211, 252; /* #7dd3fc */
+}
+
+/* Fallback to light theme if no theme is set */
+:root:not([data-theme]) {
+  /* Background colors */
+  --bg-primary: 255, 255, 255; /* #ffffff */
+  --bg-secondary: 248, 250, 252; /* #f8fafc */
+  --bg-tertiary: 241, 245, 249; /* #f1f5f9 */
+
+  /* Text colors */
+  --text-primary: 30, 41, 59; /* #1e293b */
+  --text-secondary: 100, 116, 139; /* #64748b */
+  --text-muted: 148, 163, 184; /* #94a3b8 */
+
+  /* Border colors */
+  --border-primary: 226, 232, 240; /* #e2e8f0 */
+  --border-secondary: 203, 213, 225; /* #cbd5e1 */
+
+  /* Interactive colors */
+  --interactive-primary: 59, 130, 246; /* #3b82f6 */
+  --interactive-hover: 37, 99, 235; /* #2563eb */
+  --interactive-disabled: 203, 213, 225; /* #cbd5e1 */
+
+  /* Status colors */
+  --success: 16, 185, 129; /* #10b981 */
+  --warning: 245, 158, 11; /* #f59e0b */
+  --error: 239, 68, 68; /* #ef4444 */
+  --info: 14, 165, 233; /* #0ea5e9 */
+}
+
+/* Smooth transitions for theme changes */
+:root {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  color: rgb(var(--text-primary));
+  background-color: rgb(var(--bg-primary));
+  min-height: 100vh;
+}
+
+/* Apply theme-based variables to common elements */
+.text-primary { color: rgb(var(--text-primary)) !important; }
+.text-secondary { color: rgb(var(--text-secondary)) !important; }
+.text-muted { color: rgb(var(--text-muted)) !important; }
+
+.bg-primary { background-color: rgb(var(--bg-primary)) !important; }
+.bg-secondary { background-color: rgb(var(--bg-secondary)) !important; }
+.bg-tertiary { background-color: rgb(var(--bg-tertiary)) !important; }
+
+.border-primary { border-color: rgb(var(--border-primary)) !important; }
+.border-secondary { border-color: rgb(var(--border-secondary)) !important; }
+
+.btn-primary {
+  background-color: rgb(var(--interactive-primary)) !important;
+  color: white !important;
+}
+.btn-primary:hover {
+  background-color: rgb(var(--interactive-hover)) !important;
+}
+.btn-disabled {
+  background-color: rgb(var(--interactive-disabled)) !important;
+  cursor: not-allowed !important;
+}
+
+.success { color: rgb(var(--success)) !important; }
+.warning { color: rgb(var(--warning)) !important; }
+.error { color: rgb(var(--error)) !important; }
+.info { color: rgb(var(--info)) !important; }
