@@ -1,0 +1,301 @@
+acha yaar hamain wesy iss project k lye skills bhi chahiyee thi qk wo hackathon ki requirements this hamain
+  resusable skills bnani thi aur use krni thi pr humny hamain abhi nahi ki to abb krna to hai as per the requirements
+  of this project to phir isi lye hmain bnani hain
+
+  main tumhy example k tr por bata hun k skills khaa create hongi aur naming convertion waghera
+  """
+  [Pasted text #2 +22 lines]
+  """
+
+  sahi hai abb main tumko skill donga k yh skills banao aur save karo apny specific directory main sahi
+
+Skill 1: Next.js App Router
+---
+name: nextjs-app-router
+description: Build scalable Next.js apps using App Router, layouts, and server/client components. Use for all Next.js projects.
+---
+
+# Next.js App Router
+
+## Instructions
+1. **Folder structure**
+   - Use `app/` directory
+   - Separate routes by feature
+   - Use `layout.tsx` for shared UI
+
+2. **Server vs Client**
+   - Default to Server Components
+   - Use `"use client"` only when needed
+   - Keep logic on server where possible
+
+3. **Routing**
+   - Use file-based routing
+   - Group routes with `(auth)` or `(dashboard)`
+   - Use `not-found.tsx` and `error.tsx`
+
+## Best Practices
+- Avoid heavy logic in client components
+- Fetch data in server components
+- Keep layouts thin and reusable
+
+## Example
+```tsx
+app/dashboard/layout.tsx
+app/dashboard/page.tsx
+app/(auth)/login/page.tsx
+
+
+# 📦 Skill 2: Tailwind + shadcn UI
+
+---
+
+# 📦 Skill 2: Tailwind + shadcn UI
+
+```md
+---
+name: tailwind-shadcn-ui
+description: Build clean, consistent UI using TailwindCSS and shadcn/ui components.
+---
+
+# Tailwind + shadcn UI
+
+## Instructions
+1. **Component usage**
+   - Prefer shadcn components
+   - Customize via Tailwind classes
+   - Avoid inline styles
+
+2. **Design rules**
+   - Consistent spacing (`gap-4`, `p-6`)
+   - Use semantic colors
+   - Mobile-first layout
+
+3. **Reusability**
+   - Extract common UI into components
+   - Avoid page-specific styling
+
+## Best Practices
+- Use `cn()` utility for conditional classes
+- Keep UI logic separate from business logic
+
+## Example
+```tsx
+<Button variant="outline" className="w-full">
+  Submit
+</Button>
+
+
+# 📦 Skill 3: Better Auth Implementation
+
+---
+
+# 📦 Skill 3: Better Auth Implementation
+
+```md
+---
+name: better-auth-implementation
+description: Implement authentication using Better Auth with session handling and providers.
+---
+
+# Better Auth Implementation
+
+## Instructions
+1. **Setup**
+   - Configure Better Auth server-side
+   - Use env variables correctly
+   - Verify provider credentials
+
+2. **Client usage**
+   - Use `useSession()` hook
+   - Handle loading & unauth states
+   - Redirect after login
+
+3. **Security**
+   - Never expose secrets
+   - Validate sessions server-side
+
+## Common Issues
+- Token mismatch
+- Provider misconfiguration
+- Callback URL errors
+
+## Example
+```ts
+const { data: session, isLoading } = useSession();
+
+
+# 📦 Skill 4: Route Protection & Sessions
+
+---
+
+# 📦 Skill 4: Route Protection & Sessions
+
+```md
+---
+name: route-protection-session
+description: Protect routes and APIs using session-based auth and middleware.
+---
+
+# Route Protection & Sessions
+
+## Instructions
+1. **Middleware**
+   - Protect dashboard routes
+   - Redirect unauth users
+
+2. **Server-side checks**
+   - Validate session before DB access
+   - Never trust client state
+
+3. **Client UX**
+   - Show loaders
+   - Graceful redirects
+
+## Example
+```ts
+if (!session) redirect("/login");
+
+
+# 📦 Skill 5: Prisma + Neon Database
+
+---
+
+# 📦 Skill 5: Prisma + Neon Database
+
+```md
+---
+name: prisma-neon-db
+description: Manage PostgreSQL databases using Prisma ORM and Neon.
+---
+
+# Prisma + Neon Database
+
+## Instructions
+1. **Schema design**
+   - Keep models minimal
+   - Use relations wisely
+   - Avoid premature optimization
+
+2. **Migrations**
+   - Always migrate, never edit DB manually
+   - Use `prisma migrate dev`
+
+3. **Queries**
+   - Prefer server-side queries
+   - Handle null cases
+
+## Example
+```ts
+const users = await prisma.user.findMany();
+
+
+# 📦 Skill 6: API Error Handling
+
+---
+
+# 📦 Skill 6: API Error Handling
+
+```md
+---
+name: api-error-handling
+description: Standardize API error handling and responses across backend.
+---
+
+# API Error Handling
+
+## Instructions
+1. **Error format**
+   - Consistent JSON structure
+   - Meaningful messages
+   - Correct HTTP codes
+
+2. **Logging**
+   - Log server errors
+   - Never expose stack traces to client
+
+3. **Client handling**
+   - Show friendly messages
+   - Retry where appropriate
+
+## Example
+```ts
+return NextResponse.json(
+  { error: "Unauthorized" },
+  { status: 401 }
+);
+
+
+# 📦 Skill 7: Agent Coordination Skill
+
+---
+
+# 📦 Skill 7: Agent Coordination Skill
+
+```md
+---
+name: agent-coordination-skill
+description: Coordinate multiple agents by assigning clear responsibilities and boundaries.
+---
+
+# Agent Coordination Skill
+
+## Instructions
+1. **Define agent roles**
+   - UI Agent
+   - Auth Agent
+   - Backend Agent
+
+2. **Boundaries**
+   - One agent = one responsibility
+   - No overlap
+
+3. **Communication**
+   - Pass clear context
+   - Provide expected output format
+
+## Best Practices
+- Never let agents guess requirements
+- Provide file paths and constraints
+
+
+> acha yaar iss project main na hamain spec drive deveopment  appraoch use krni thi AI driver development, na k vibe
+  coding to meri poori kooshish thi k jo proper procedure hota hai k constitution --> specification --> tasks --->
+  plan ---> implmentation (shayad task aur plan interchange hun) aur sath main prompt history record bhi bnta rhta hai
+  aur inn sb ki md files bhi
+
+  to abb acha jb hum project py kaam krhy hoty hain to hum project ko divide kr detain hain parts main to unky specs
+  aur phir so on working hoti hai tk record bhi rhy aur proper working bhi ho
+
+  hamary hackthon ki requirements main bhi hai yh sb aur wo chekc bhi kringy k md files jo hain k kb abi hain aur kia
+  humny manual creation to nahi ki vibe coding to nahi yh sb cheezain kcih jagohn pr to allow ho hai vibe coding
+  matalb k specic issue tha to bss direct prompt dai k sahi kr wadia lekin jo main main kaam hain unki md fils aur jo
+  proepr procdure hai wo bhi follow krna tha
+
+
+  mera project structure jo hai hai usko bhi daikho
+
+  abb jo tumko krna hai k bhot hi intelligently tumko plhy to daikhna hai kon kon si md files bnaingy khaa honi
+  chahiyee ks ks k specs hongy aur tasklist phr aur plan waghera smjh gye aur main cheez yh k ki dir main bna rhy ho
+  wo bhi bhot important to properly working krni hain aur wo fiels cearet krni hain qk mjuhy lgta hai k md files aur
+  bhi honi chahyee thi aur spec driver developmet propely follow hona tha jo k shayad nahi hai
+
+  abb tum bna do baad main rhy ho pr khiyaal krna k jo bhi read kari ya daikhy usko lagy bhi properly precduer aur
+  seqeuce wse project py working hue hai
+
+  acha dates of craetion wesy to ajj ki hogi pr tumko wo adjust krna hoga k seqeunce wise jb banogy k to isko usoolan
+  ks file k baad hona chahiyee tha to jo md files alerady bni hur hain usko daikhyt hue
+
+
+  yh kaa bhot importatn aur sensitiev hai to proerly working karo abb iss py
+
+> acha yaar 3 sy 4  prespecive hain jo main smjhta hun uss py working to hue extensively pr uski specs aur md files
+  nahi hain
+
+  Backend
+  DataBase
+  frontend + backencd + Database integeration aur phir aakhir main better-auth aur JWT wala
+  APIs ki jo working thi endpoints proper aur request khaa sy aai gi khaa jai gi db sy connectivity aur front and
+  backend ki coonectivity
+
+  to jaisy phly tumny sequence wise kia hai gou k yh phly hona chahiyee tha pr hum abhi kr rhy hain to bhai dates sahi
+  daalna jo justifiable ho aaj ki nahi daalna sb main agar cha yh sb working ajj hue hai lekin thori phly ki ho

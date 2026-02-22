@@ -1,0 +1,532 @@
+# MCP Tool Schemas: Todo Management Tools
+
+**Feature**: 007-ai-chatbot-integration
+**Date**: 2026-02-08
+**Protocol**: Model Context Protocol (MCP)
+
+## Overview
+
+This document defines the MCP tool schemas for todo management operations. These tools are invoked by the AI agent to perform task operations based on user's natural language commands.
+
+---
+
+## Tool: add_task
+
+**Description**: Create a new task for the user
+
+**Input Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the user creating the task"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Title of the task"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description of the task"
+    }
+  },
+  "required": ["user_id", "title"]
+}
+```
+
+**Output Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the operation succeeded"
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "is_completed": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {"type": "string"},
+        "message": {"type": "string"},
+        "user_message": {"type": "string"}
+      }
+    }
+  },
+  "required": ["success"]
+}
+```
+
+**Example Usage**:
+```json
+// Input
+{
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Buy groceries",
+  "description": "Milk, eggs, bread"
+}
+
+// Output (success)
+{
+  "success": true,
+  "task": {
+    "id": "987fcdeb-51a2-43f1-b456-426614174999",
+    "title": "Buy groceries",
+    "description": "Milk, eggs, bread",
+    "is_completed": false,
+    "created_at": "2026-02-08T12:34:56.789Z"
+  }
+}
+
+// Output (error)
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Title exceeds maximum length of 200 characters",
+    "user_message": "That task title is too long. Please keep it under 200 characters."
+  }
+}
+```
+
+---
+
+## Tool: list_tasks
+
+**Description**: Retrieve user's tasks with optional filtering
+
+**Input Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the user"
+    },
+    "filter": {
+      "type": "string",
+      "enum": ["all", "pending", "completed"],
+      "default": "all",
+      "description": "Filter tasks by completion status"
+    }
+  },
+  "required": ["user_id"]
+}
+```
+
+**Output Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "format": "uuid"},
+          "title": {"type": "string"},
+          "description": {"type": "string"},
+          "is_completed": {"type": "boolean"},
+          "created_at": {"type": "string", "format": "date-time"},
+          "updated_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "count": {
+      "type": "integer",
+      "description": "Number of tasks returned"
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {"type": "string"},
+        "message": {"type": "string"},
+        "user_message": {"type": "string"}
+      }
+    }
+  },
+  "required": ["success"]
+}
+```
+
+**Example Usage**:
+```json
+// Input
+{
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "filter": "pending"
+}
+
+// Output (success)
+{
+  "success": true,
+  "tasks": [
+    {
+      "id": "987fcdeb-51a2-43f1-b456-426614174999",
+      "title": "Buy groceries",
+      "description": "Milk, eggs, bread",
+      "is_completed": false,
+      "created_at": "2026-02-08T12:34:56.789Z",
+      "updated_at": "2026-02-08T12:34:56.789Z"
+    },
+    {
+      "id": "456e7890-a12b-34c5-d678-901234567890",
+      "title": "Call mom",
+      "description": "",
+      "is_completed": false,
+      "created_at": "2026-02-08T10:20:30.123Z",
+      "updated_at": "2026-02-08T10:20:30.123Z"
+    }
+  ],
+  "count": 2
+}
+
+// Output (empty list)
+{
+  "success": true,
+  "tasks": [],
+  "count": 0
+}
+```
+
+---
+
+## Tool: update_task
+
+**Description**: Update an existing task's title
+
+**Input Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the user"
+    },
+    "task_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the task to update"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "New title for the task"
+    }
+  },
+  "required": ["user_id", "task_id", "title"]
+}
+```
+
+**Output Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "title": {"type": "string"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {"type": "string"},
+        "message": {"type": "string"},
+        "user_message": {"type": "string"}
+      }
+    }
+  },
+  "required": ["success"]
+}
+```
+
+**Example Usage**:
+```json
+// Input
+{
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "task_id": "987fcdeb-51a2-43f1-b456-426614174999",
+  "title": "Buy groceries and cook dinner"
+}
+
+// Output (success)
+{
+  "success": true,
+  "task": {
+    "id": "987fcdeb-51a2-43f1-b456-426614174999",
+    "title": "Buy groceries and cook dinner",
+    "updated_at": "2026-02-08T14:22:10.456Z"
+  }
+}
+
+// Output (error - task not found)
+{
+  "success": false,
+  "error": {
+    "code": "TASK_NOT_FOUND",
+    "message": "Task with ID 987fcdeb-51a2-43f1-b456-426614174999 not found for user 123e4567-e89b-12d3-a456-426614174000",
+    "user_message": "I couldn't find that task. Would you like to see your task list?"
+  }
+}
+```
+
+---
+
+## Tool: complete_task
+
+**Description**: Mark a task as completed
+
+**Input Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the user"
+    },
+    "task_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the task to complete"
+    }
+  },
+  "required": ["user_id", "task_id"]
+}
+```
+
+**Output Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "title": {"type": "string"},
+        "is_completed": {"type": "boolean"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {"type": "string"},
+        "message": {"type": "string"},
+        "user_message": {"type": "string"}
+      }
+    }
+  },
+  "required": ["success"]
+}
+```
+
+**Example Usage**:
+```json
+// Input
+{
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "task_id": "987fcdeb-51a2-43f1-b456-426614174999"
+}
+
+// Output (success)
+{
+  "success": true,
+  "task": {
+    "id": "987fcdeb-51a2-43f1-b456-426614174999",
+    "title": "Buy groceries",
+    "is_completed": true,
+    "updated_at": "2026-02-08T15:30:45.789Z"
+  }
+}
+
+// Output (already completed)
+{
+  "success": true,
+  "task": {
+    "id": "987fcdeb-51a2-43f1-b456-426614174999",
+    "title": "Buy groceries",
+    "is_completed": true,
+    "updated_at": "2026-02-08T15:30:45.789Z"
+  }
+}
+```
+
+---
+
+## Tool: delete_task
+
+**Description**: Delete a task permanently
+
+**Input Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the user"
+    },
+    "task_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the task to delete"
+    }
+  },
+  "required": ["user_id", "task_id"]
+}
+```
+
+**Output Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "deleted_task_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the deleted task"
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {"type": "string"},
+        "message": {"type": "string"},
+        "user_message": {"type": "string"}
+      }
+    }
+  },
+  "required": ["success"]
+}
+```
+
+**Example Usage**:
+```json
+// Input
+{
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "task_id": "987fcdeb-51a2-43f1-b456-426614174999"
+}
+
+// Output (success)
+{
+  "success": true,
+  "deleted_task_id": "987fcdeb-51a2-43f1-b456-426614174999"
+}
+
+// Output (error - task not found)
+{
+  "success": false,
+  "error": {
+    "code": "TASK_NOT_FOUND",
+    "message": "Task with ID 987fcdeb-51a2-43f1-b456-426614174999 not found for user 123e4567-e89b-12d3-a456-426614174000",
+    "user_message": "I couldn't find that task to delete."
+  }
+}
+```
+
+---
+
+## Error Codes
+
+| Code | Description | User Message Example |
+|------|-------------|---------------------|
+| VALIDATION_ERROR | Input validation failed | "That task title is too long. Please keep it under 200 characters." |
+| TASK_NOT_FOUND | Task doesn't exist or doesn't belong to user | "I couldn't find that task. Would you like to see your task list?" |
+| UNAUTHORIZED | User not authorized for operation | "You don't have permission to perform this action." |
+| DATABASE_ERROR | Database operation failed | "I'm having trouble saving that right now. Please try again." |
+| INTERNAL_ERROR | Unexpected error | "Something went wrong. Please try again in a moment." |
+
+---
+
+## Tool Implementation Guidelines
+
+### Validation
+- Always validate user_id matches authenticated user
+- Validate all required parameters are present
+- Validate string lengths and formats
+- Return user-friendly error messages
+
+### Idempotency
+- `list_tasks`: Idempotent (read-only)
+- `update_task`: Idempotent (same input = same result)
+- `complete_task`: Idempotent (completing twice = same result)
+- `delete_task`: Idempotent (deleting twice = same result, second returns not found)
+- `add_task`: NOT idempotent (creates new task each time)
+
+### Logging
+- Log all tool invocations with parameters (sanitize sensitive data)
+- Log execution time for performance monitoring
+- Log errors with full context for debugging
+
+### Security
+- Validate user_id on every operation
+- Ensure task ownership before update/delete/complete
+- Prevent cross-user data access
+- Sanitize all user inputs
+
+---
+
+## Testing Checklist
+
+- [ ] All tools validate user_id parameter
+- [ ] All tools handle missing required parameters
+- [ ] All tools return proper error codes
+- [ ] User-friendly error messages are clear and helpful
+- [ ] Idempotent operations behave correctly on repeated calls
+- [ ] Task ownership is validated before operations
+- [ ] Cross-user access is prevented
+- [ ] All tools log invocations correctly
+- [ ] Performance is acceptable (<1 second per operation)
