@@ -1,0 +1,212 @@
+openapi: 3.0.3
+info:
+  title: Todo AI Chatbot API
+  description: REST API for AI-powered todo management chatbot
+  version: 1.0.0
+  contact:
+    name: Phase-III Todo AI Chatbot
+
+servers:
+  - url: https://api.example.com
+    description: Production server
+  - url: http://localhost:8000
+    description: Development server
+
+paths:
+  /api/{user_id}/chat:
+    post:
+      summary: Send chat message
+      description: |
+        Process a natural language message from the user and return AI assistant response.
+        The endpoint is stateless - conversation context is rebuilt from database on each request.
+      operationId: sendChatMessage
+      tags:
+        - Chat
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: UUID of the authenticated user
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  description: User's natural language input
+                  minLength: 1
+                  maxLength: 2000
+                  example: "Add buy groceries to my todo list"
+                conversation_id:
+                  type: string
+                  format: uuid
+                  description: Optional conversation ID to continue existing conversation. If omitted, a new conversation is created.
+                  example: "987fcdeb-51a2-43f1-b456-426614174999"
+            examples:
+              newConversation:
+                summary: Start new conversation
+                value:
+                  message: "Show me all my tasks"
+              continueConversation:
+                summary: Continue existing conversation
+                value:
+                  message: "Mark the first one as complete"
+                  conversation_id: "987fcdeb-51a2-43f1-b456-426614174999"
+      responses:
+        '200':
+          description: Successful response with AI assistant message
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - conversation_id
+                  - response
+                  - timestamp
+                properties:
+                  conversation_id:
+                    type: string
+                    format: uuid
+                    description: ID of the conversation (new or existing)
+                    example: "987fcdeb-51a2-43f1-b456-426614174999"
+                  response:
+                    type: string
+                    description: AI assistant's response message
+                    example: "I've added 'Buy groceries' to your task list!"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp of the response
+                    example: "2026-02-08T12:34:56.789Z"
+              examples:
+                taskCreated:
+                  summary: Task creation confirmation
+                  value:
+                    conversation_id: "987fcdeb-51a2-43f1-b456-426614174999"
+                    response: "I've added 'Buy groceries' to your task list!"
+                    timestamp: "2026-02-08T12:34:56.789Z"
+                taskList:
+                  summary: Task list response
+                  value:
+                    conversation_id: "987fcdeb-51a2-43f1-b456-426614174999"
+                    response: "Here are your tasks:\n1. Buy groceries (pending)\n2. Call mom (pending)\n3. Finish report (completed)"
+                    timestamp: "2026-02-08T12:35:10.123Z"
+        '400':
+          description: Bad request - invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                emptyMessage:
+                  summary: Empty message
+                  value:
+                    error: "Message cannot be empty"
+                    code: "INVALID_INPUT"
+                messageTooLong:
+                  summary: Message exceeds length limit
+                  value:
+                    error: "Message exceeds maximum length of 2000 characters"
+                    code: "INVALID_INPUT"
+        '401':
+          description: Unauthorized - invalid or missing JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingToken:
+                  summary: Missing authorization header
+                  value:
+                    error: "Authorization header required"
+                    code: "UNAUTHORIZED"
+                invalidToken:
+                  summary: Invalid JWT token
+                  value:
+                    error: "Invalid or expired token"
+                    code: "UNAUTHORIZED"
+        '403':
+          description: Forbidden - user_id in path doesn't match authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                userMismatch:
+                  summary: User ID mismatch
+                  value:
+                    error: "Cannot access another user's chat"
+                    code: "FORBIDDEN"
+        '404':
+          description: Not found - conversation_id doesn't exist or doesn't belong to user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                conversationNotFound:
+                  summary: Conversation not found
+                  value:
+                    error: "Conversation not found"
+                    code: "NOT_FOUND"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                serverError:
+                  summary: Generic server error
+                  value:
+                    error: "An error occurred processing your request. Please try again."
+                    code: "INTERNAL_ERROR"
+                aiServiceError:
+                  summary: AI service unavailable
+                  value:
+                    error: "The chatbot is temporarily unavailable. Please try again in a moment."
+                    code: "SERVICE_UNAVAILABLE"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Better Auth JWT token
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - error
+        - code
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+          enum:
+            - INVALID_INPUT
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - NOT_FOUND
+            - INTERNAL_ERROR
+            - SERVICE_UNAVAILABLE
+
+tags:
+  - name: Chat
+    description: AI chatbot endpoints for natural language todo management

@@ -1,0 +1,120 @@
+# QWEN.md - Qwen Code configuration (keep this)
+!.qwen/QWEN.md
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+ENV/
+.ENV
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+*.cover
+.pytest_cache/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pip-log.txt
+
+# Environment variables (keep examples)
+!.env.example
+!.env.local.example
+.env
+.env.local
+.env.backup
+.env.dev
+.env.development.local
+.env.prod
+.env.production.local
+.env.staging
+.env.testing
+.env.docker
+.env.remote
+.env.test
+
+# Dev tools / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Next.js / React
+.next/
+out/
+.cache/
+.pnp
+.pnp.js
+
+# TypeScript
+*.tsbuildinfo
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+db.sqlite3
+
+# Build outputs
+lib-cov/
+coverage/
+
+# Runtime data
+pids/
+*.pid
+*.pid.lock
+
+# Temporary folders
+tmp/
+temp/
+
+# Better Auth specific
+.auth/
+
+# Frontend build artifacts
+public/build/
+
+# Python virtual environment marker
+bin/
+include/
+Lib/
+Scripts/
+pyvenv.cfg
+
+# Ollama / AI model files
+*.gguf
+*.bin
+models/
+
+# MCP tool logs
+mcp/*.log
+
+# Local secrets (keep examples)
+!secrets.env.example
